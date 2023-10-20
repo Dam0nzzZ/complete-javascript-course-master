@@ -254,4 +254,25 @@ const getPosition = function () {
     });
 };
 
-getPosition().then(resp => {});
+// getPosition().then(resp => {
+//     console.log(resp);
+//     console.log(resp.coords.latitude, resp.coords.longitude);
+//     whereAmI(resp.coords.latitude, resp.coords.longitude);
+// });
+
+//////////////////////////
+//coding challenge #2
+const img = document.querySelector('.image');
+const createImage = function (imgPath) {
+    const newImg = document.createElement('img');
+    newImg.src = imgPath;
+    return new Promise(
+        resolve => {
+            newImg.addEventListener('load', () => {
+                img.insertAdjacentElement('beforeend', newImg);
+                resolve(newImg);
+            });
+        },
+        reject => {}
+    );
+};
