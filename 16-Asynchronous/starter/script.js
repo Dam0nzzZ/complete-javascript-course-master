@@ -262,7 +262,8 @@ const getPosition = function () {
 
 //////////////////////////
 //coding challenge #2
-const img = document.querySelector('.image');
+const imgContainer = document.querySelector('.image');
+/*
 const createImage = function (imgPath) {
     const newImg = document.createElement('img');
     newImg.src = imgPath;
@@ -273,6 +274,37 @@ const createImage = function (imgPath) {
                 resolve(newImg);
             });
         },
-        reject => {}
+        reject => {
+            throw new Error('error event');
+            reject();
+        }
     );
 };
+*/
+const wait = function (seconds) {
+    return new Promise(function (resolve, reject) {
+        setTimeout(resolve, seconds * 1000);
+    });
+};
+//create image element
+const createImg = function (imgPath) {
+    return new Promise(function (resolve, reject) {
+        const img = document.createElement('img');
+        img.src = imgPath;
+
+        img.addEventListener('load', function () {
+            imgContainer.append(img);
+            resolve(img);
+        });
+        img.addEventListener('error', function () {
+            reject(new Error('img not found'));
+        });
+    });
+};
+let currentImg;
+
+createImg('img/img-1.jpg').then(img => {
+    currentImg = img;
+    console.log('img1 loaded');
+    return wait(2);
+});
