@@ -262,7 +262,7 @@ const getPosition = function () {
 
 //////////////////////////
 //coding challenge #2
-const imgContainer = document.querySelector('.image');
+// const imgContainer = document.querySelector('.images');
 /*
 const createImage = function (imgPath) {
     const newImg = document.createElement('img');
@@ -282,10 +282,11 @@ const createImage = function (imgPath) {
 };
 */
 const wait = function (seconds) {
-    return new Promise(function (resolve, reject) {
+    return new Promise(function (resolve) {
         setTimeout(resolve, seconds * 1000);
     });
 };
+const imgContainer = document.querySelector('.images');
 //create image element
 const createImg = function (imgPath) {
     return new Promise(function (resolve, reject) {
@@ -301,10 +302,25 @@ const createImg = function (imgPath) {
         });
     });
 };
+
 let currentImg;
 
-createImg('img/img-1.jpg').then(img => {
-    currentImg = img;
-    console.log('img1 loaded');
-    return wait(2);
-});
+createImg('img/img-1.jpg')
+    .then(img => {
+        currentImg = img;
+        console.log('img1 loaded');
+        return wait(2);
+    })
+    .then(() => {
+        currentImg.style.display = 'none';
+        return createImg('img/img-2.jpg');
+    })
+    .then(img => {
+        currentImg = img;
+        console.log('img2 loaded');
+        return wait(2);
+    })
+    .then(() => {
+        currentImg.style.display = 'none';
+    })
+    .catch(err => console.log(err));
