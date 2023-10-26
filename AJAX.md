@@ -47,7 +47,36 @@
       throw new Error("wrong");
       ```
 
-    -
+  - `await`
+    - 等待一个 Promise 兑现并获取它兑现之后的值。
+    - `then`:promise 兑现后将结果作为 then 回调函数的传入参数进行处理
+    - `await`:直接获得 promise 兑现后的结果
+  - `async`函数
+    - 使用 async 关键字声明的函数。async 函数是 AsyncFunction 构造函数的实例，并且其中允许使用 await 关键字
+    - 注意！异步函数只能返回 promise 不能直接获取返回的值。需要用`.then(resp=>)`来获取
+    - 异步函数中即使出现错误最终也会返回 fulfilled，可以通过再 catch 中再添加一个`throw`来解决
+  - `try-catch`
+    - 语句标记要尝试的语句块，并指定一个出现异常时抛出的响应。async 函数中无法使用`.catch()` `.finally()`。可使用`try-catch`和`throw`
+    - ```js
+      try {
+        try_statements
+      }
+      [catch (exception_var_1 if condition_1) { // non-standard
+        catch_statements_1
+      }]
+      ...
+      [catch (exception_var_2) {
+        catch_statements_2
+      }]
+      [finally {
+        finally_statements
+      }]
+      ```
+
+### 异步操作
+
+- JS 引擎是单线程的，异步操作包括添加事件监听都是在 web api 中完成的
+- 当完成事件/fetch 完成后，回调函数进入回调队列，异步操作 promise 进入微任务队列 microtasks queue。微任务队列优先级大于回调队列。队列首部进入系统堆栈进行操作
 
 - ```js
   console.log("Test start");
@@ -60,7 +89,7 @@
   console.log("Test end");
   /*
   Test start
-  
+  Test end
   Resolved promise 1
   Resolved promise 2
   0 sec timer

@@ -75,13 +75,6 @@ const renderError = function (msg) {
 //   })
 // }
 
-const getJSON = function (url, errorMsg = 'Something went wrong') {
-    return fetch(url).then(response => {
-        if (!response.ok) throw new Error(`${errorMsg}:${response.status}`);
-        return response.json();
-    }); //resolve-return promise;reject-throw error
-};
-
 const getCountryData = function (country) {
     getJSON(
         `https://restcountries.com/v3.1/name/${country}`,
@@ -305,22 +298,94 @@ const createImg = function (imgPath) {
 
 let currentImg;
 
-createImg('img/img-1.jpg')
-    .then(img => {
-        currentImg = img;
-        console.log('img1 loaded');
-        return wait(2);
-    })
-    .then(() => {
-        currentImg.style.display = 'none';
-        return createImg('img/img-2.jpg');
-    })
-    .then(img => {
-        currentImg = img;
-        console.log('img2 loaded');
-        return wait(2);
-    })
-    .then(() => {
-        currentImg.style.display = 'none';
-    })
-    .catch(err => console.log(err));
+// createImg('img/img-1.jpg')
+//     .then(img => {
+//         currentImg = img;
+//         console.log('img1 loaded');
+//         return wait(2);
+//     })
+//     .then(() => {
+//         currentImg.style.display = 'none';
+//         return createImg('img/img-2.jpg');
+//     })
+//     .then(img => {
+//         currentImg = img;
+//         console.log('img2 loaded');
+//         return wait(2);
+//     })
+//     .then(() => {
+//         currentImg.style.display = 'none';
+//     })
+//     .catch(err => console.log(err));
+
+const whereAmIAsync = async function () {
+    try {
+        const posi = await getPosition();
+        const { latitude: lat, longitude: lng } = posi.coords;
+        const resp = await fetch(
+            `https://geocode.xyz/${lat},${lng}?geoit=json&auth=252935116914543590358x90146 `
+        );
+        console.log(resp);
+        if (!resp.ok) throw new Error('Problem getting position');
+        const data = await resp.json();
+        console.log(data);
+        const res = await fetch(
+            `https://restcountries.com/v3.1/name/${data.country}`
+        );
+        if (!res.ok) throw new Error('Problem getting country');
+        const dataCountry = await res.json();
+        console.log(dataCountry[0]);
+        renderCountry(dataCountry[0]);
+        return `you are in ${dataCountry[0].name.common}`;
+    } catch (err) {
+        console.error(err);
+        renderError(`Something went wrong ${err.message}`);
+    }
+};
+
+console.log('1:start program');
+// const ans = whereAmIAsync();//doesnt work
+(async function () {
+    try {
+        const ans = await whereAmIAsync();
+        console.log(`2:you${ans}`);
+    } catch (err) {
+        console.error(`error msg:${err}`);
+    }
+})();
+
+console.log('3:end');
+
+const getJSON = function (url, errorMsg = 'Something went wrong') {
+    return fetch(url).then(response => {
+        if (!response.ok) throw new Error(`${errorMsg}:${response.status}`);
+        return response.json();
+    }); //resolve-return promise;reject-throw error
+};
+
+const get3Countries = async function (c1, c2, c3) {
+    try {
+        // const [data1] = await getJSON(
+        //     `https://restcountries.com/v3.1/name/${c1}`
+        // );
+        // const [data2] = await getJSON(
+        //     `https://restcountries.com/v3.1/name/${c2}`
+        // );
+        // const [data3] = await getJSON(
+        //     `https://restcountries.com/v3.1/name/${c3}`
+        // );
+        const ans = await Promise.all([
+            getJSON(`https://restcountries.com/v3.1/name/${c1}`),
+            getJSON(`https://restcountries.com/v3.1/name/${c2}`),
+            getJSON(`https://restcountries.com/v3.1/name/${c3}`),
+        ]);
+        // console.log([data1.capital, data2.capital, data3.capital]);
+        const data = ans.map(arr => arr[0].capital);
+        console.log(ans);
+        console.log(data);
+    } catch (err) {
+        console.error(err);
+    }
+};
+
+get3Countries('usa', 'cn', 'Japan');
