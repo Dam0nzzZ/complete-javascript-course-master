@@ -388,4 +388,15 @@ const get3Countries = async function (c1, c2, c3) {
     }
 };
 
-get3Countries('usa', 'cn', 'Japan');
+// get3Countries('usa', 'cn', 'Japan');
+
+const waitRace = function (sec) {
+    return new Promise(function (_, reject) {
+        setTimeout(() => {
+            reject(new Error('Request time out'));
+        }, sec * 1000);
+    });
+};
+Promise.race([getJSON('https://restcountries.com/v3.1/name/usa'), waitRace(7)])
+    .then(resp => console.log(resp))
+    .catch(err => console.error(err));

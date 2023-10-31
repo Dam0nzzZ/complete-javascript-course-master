@@ -51,6 +51,7 @@
     - 等待一个 Promise 兑现并获取它兑现之后的值。
     - `then`:promise 兑现后将结果作为 then 回调函数的传入参数进行处理
     - `await`:直接获得 promise 兑现后的结果
+    - es2022 后可用直接用于有 module tag 的 js 中
   - `async`函数
     - 使用 async 关键字声明的函数。async 函数是 AsyncFunction 构造函数的实例，并且其中允许使用 await 关键字
     - 注意！异步函数只能返回 promise 不能直接获取返回的值。需要用`.then(resp=>)`来获取
@@ -72,6 +73,32 @@
         finally_statements
       }]
       ```
+  - `Promise.all(promise1,pro2,...)`
+    - 接受一个 Promise 可迭代对象作为输入，并返回一个 Promise。
+    - 当所有输入的 Promise 都被兑现时，返回的 Promise 也将被兑现（即使传入的是一个空的可迭代对象），并返回一个包含所有兑现值的数组。
+    - 如果输入的任何 Promise 被拒绝，则返回的 Promise 将被拒绝，并带有第一个被拒绝的原因(promise 短路)。
+  - `Promise.race([pro])`
+
+    - 接受一个 promise 可迭代对象作为输入，并返回一个 Promise。这个返回的 promise 会随着第一个 promise 的敲定而敲定。
+    - 如果第一个敲定的 promise 被兑现，那么返回的 promise 也会被兑现；如果第一个敲定的 promise 被拒绝，那么返回的 promise 也会被拒绝。
+    - 例：设置请求超时事件，将它加入 race 中，如果超过该时间仍为兑现就返回 error
+
+      ```js
+      const waitRace = function (sec) {
+        return new Promise(function (_, reject) {
+          setTimeout(() => {
+            reject(new Error("Request time out"));
+          }, sec * 1000);
+        });
+      };
+      ```
+
+  - `Promise.allSettled([pro])`(es2020)
+    - 将一个 Promise 可迭代对象作为输入，并返回一个单独的 Promise。
+    - 当所有输入的 Promise 都已敲定时（包括传入空的可迭代对象时），返回的 Promise 将被兑现，并带有描述每个 Promise 结果的对象数组。
+  - `Promise.any([pro])`(es2021)
+    - 将一个 Promise 可迭代对象作为输入，并返回一个 Promise。
+    - 当输入的任何一个 Promise 兑现时，这个返回的 Promise 将会兑现，并返回第一个兑现的值。
 
 ### 异步操作
 

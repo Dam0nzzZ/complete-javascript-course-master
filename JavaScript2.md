@@ -1,0 +1,28 @@
+## 模块化 Module
+
+- 模块存在于文件，并且一个文件只能存在一个模块
+- es6 module——script 文件
+  - 最高级变量：私有，外部只能通过 import 访问，避免了变量重名污染。——global 公共
+  - 默认模式：strict mode——非严格模式，须手动声明
+  - 最高级 this：undefined——window
+  - 可以 import/export，并且应该在最顶层进行——不可以
+  - html linking：`<script type="module">`——`<script>`
+  - 默认下载方式：异步 async——阻塞同步
+- module 导入应该在最顶层。主程序应在所有导入 module 运行结束后再运行。默认先导入再执行，不论 import 语句在什么位置。
+- module 导入流程
+  - 解析 index.js（同步、在线连接）
+  - 异步下载引用的模块文件
+  - 异步导入模块的导出
+  - 执行模块的代码，获得导出值/函数
+  - 执行 index.js
+- 注意：导入模块是指针指向，而非复制粘贴。如果模块中的值改变，其导出值、其他程序导入值都将改变
+- 方法
+  - 导出
+    - 命名导出:`export {para [as paraInshort]};`
+      - 一次导出多个函数/变量，严格按照变量名导出入
+    - 默认导出:`export default function/para;`
+      - 导出一个函数/变量，并且导入时随意命名
+  - 导入
+    - 命名导入:`import {para1,para2 as a} from 'module.js'` 导入变量 para1，para2 并将其作为变量 a
+    - `import * as moduObj from ''` 将模块中所有导出存入对象内
+    - 默认导入:`import para from ''`，注意没有{}并且随意命名
